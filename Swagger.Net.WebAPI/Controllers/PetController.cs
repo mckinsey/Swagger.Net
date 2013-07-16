@@ -20,7 +20,7 @@ namespace Swagger_Test
         ///     GET api/Pet
         /// </summary>
         /// <returns cref="Pet" type="Pet[]"></returns>
-        public HttpResponseMessage Get()
+        public HttpResponseMessage Get(int page = 1, int? size=10)
         {
             return  Request.CreateResponse(HttpStatusCode.OK,  new Pet[] { new Pet() { Id=1, Name="Pet #1"} , new Pet() { Id = 2, Name = "Pet #2" } });
         }
