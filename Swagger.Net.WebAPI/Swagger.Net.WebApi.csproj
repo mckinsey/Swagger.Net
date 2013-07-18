@@ -127,21 +127,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="docs\css\screen.css" />
-    <Content Include="docs\images\pet_store_api.png" />
-    <Content Include="docs\images\wordnik_api.png" />
-    <Content Include="docs\index - Copy.html" />
-    <Content Include="docs\index.html" />
-    <Content Include="docs\lib\backbone-min.js" />
-    <Content Include="docs\lib\handlebars.runtime-1.0.0.beta.6.js" />
-    <Content Include="docs\lib\jquery.ba-bbq.min.js" />
-    <Content Include="docs\lib\jquery.min.js" />
-    <Content Include="docs\lib\jquery.slideto.min.js" />
-    <Content Include="docs\lib\jquery.wiggle.min.js" />
-    <Content Include="docs\lib\swagger.js" />
-    <Content Include="docs\lib\underscore-min.js" />
-    <Content Include="docs\swagger-ui.js" />
-    <Content Include="docs\swagger-ui.min.js" />
+    <Content Include="docs\**\*" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
