@@ -110,7 +110,7 @@ namespace Swagger.Net
         }
         private static bool IsSimpleType(Type type)
         {
-            if (type.IsPrimitive || type.Assembly.FullName.Contains("mscorlib"))
+            if (type.IsPrimitive || (!type.IsGenericType && type.Assembly.FullName.Contains("mscorlib")))
                 return true;
             return false;
         }
