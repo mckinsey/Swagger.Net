@@ -116,7 +116,12 @@ namespace Swagger.Net
             ReflectedHttpActionDescriptor reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
             if (reflectedActionDescriptor != null)
             {
-                return reflectedActionDescriptor.MethodInfo.Name;
+                // Add param names to nick name to distinguish two different request of same type (in ui collapsible blocks)
+                // GET Blogs/
+                // GET Blogs/{id}
+                var parameters=reflectedActionDescriptor.MethodInfo.GetParameters();
+                var paramString = parameters != null && parameters.Any() ? parameters.Select(p => p.Name).Aggregate((f, s) => f + "_" + s) : string.Empty;
+                return reflectedActionDescriptor.MethodInfo.Name+"_"+paramString;
             }
 
             return "NicknameNotFound";
