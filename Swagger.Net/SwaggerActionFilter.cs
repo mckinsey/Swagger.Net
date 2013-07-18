@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -56,6 +57,18 @@ namespace Swagger.Net
                 ResourceApi rApi = SwaggerGen.CreateResourceApi(api);
                 r.apis.Add(rApi);
 
+                List<ResourceModel> rModels = SwaggerGen.CreateResourceModel(api.ActionDescriptor.ReturnType);
+                if (rModels != null && rModels.Any())
+                {
+                    foreach (var rModel in rModels)
+                    {
+                        if (!r.models.ContainsKey(rModel.name))
+                        {
+                            r.models.Add(rModel.name, rModel);
+                        }  
+                    }
+                    
+                }
                 ResourceApiOperation rApiOperation = SwaggerGen.CreateResourceApiOperation(api, docProvider);
                 rApi.operations.Add(rApiOperation);
 

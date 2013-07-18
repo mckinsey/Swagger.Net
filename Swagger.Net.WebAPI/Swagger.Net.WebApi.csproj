@@ -128,21 +128,30 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BlogPostsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PetsController.cs" />
     <Compile Include="Controllers\TagsController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Color.cs" />
+    <Compile Include="Models\Pet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="docs\css\hightlight.default.css" />
     <Content Include="docs\css\screen.css" />
+    <Content Include="docs\images\logo_small.png" />
     <Content Include="docs\images\pet_store_api.png" />
+    <Content Include="docs\images\throbber.gif" />
     <Content Include="docs\images\wordnik_api.png" />
     <Content Include="docs\index - Copy.html" />
     <Content Include="docs\index.html" />
     <Content Include="docs\lib\backbone-min.js" />
+    <Content Include="docs\lib\handlebars-1.0.rc.1.js" />
     <Content Include="docs\lib\handlebars.runtime-1.0.0.beta.6.js" />
+    <Content Include="docs\lib\highlight.7.3.pack.js" />
+    <Content Include="docs\lib\jquery-1.8.0.min.js" />
     <Content Include="docs\lib\jquery.ba-bbq.min.js" />
     <Content Include="docs\lib\jquery.min.js" />
     <Content Include="docs\lib\jquery.slideto.min.js" />
@@ -167,7 +176,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

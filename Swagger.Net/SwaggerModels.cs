@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Web;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
@@ -44,7 +45,8 @@ namespace Swagger.Net
                 apiVersion = Assembly.GetCallingAssembly().GetType().Assembly.GetName().Version.ToString(),
                 swaggerVersion = SWAGGER_VERSION,
                 basePath = uri.GetLeftPart(UriPartial.Authority) + HttpRuntime.AppDomainAppVirtualPath.TrimEnd('/'),
-                apis = new List<ResourceApi>()
+                apis = new List<ResourceApi>(),
+                models=new Dictionary<string,ResourceModel>()
             };
 
             if (includeResourcePath) rl.resourcePath = controllerContext.ControllerDescriptor.ControllerName;
@@ -67,6 +69,50 @@ namespace Swagger.Net
             };
 
             return rApi;
+        }
+
+        /// <summary>
+        /// Creates the resource model.
+        /// </summary>
+        /// <param name="api">Description of the api via the ApiExplorer.</param>
+        /// <returns>A resource model</returns>
+        public static List<ResourceModel> CreateResourceModel(Type returnType)
+        {
+
+            if(returnType ==null)
+                return null;
+            if (returnType.IsGenericType)
+                returnType = returnType.GetGenericArguments()[0];
+            if (IsSimpleType(returnType)) return null;
+
+            List<ResourceModel> modelArray = new List<ResourceModel>();
+            ResourceModel model = new ResourceModel();
+            model.id = returnType.Name;
+            model.name = returnType.Name;
+            model.properties = new Dictionary<string,ResourceModelProperty>();
+            var properties = returnType.GetProperties();
+
+            foreach (var property in properties)
+            {
+                ResourceModelProperty prop = new ResourceModelProperty();
+                prop.required = property.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.RequiredAttribute), true).Any();
+                prop.type = GetTypeAsString(property.PropertyType);
+
+                model.properties.Add(property.Name, prop);
+
+                if (!IsSimpleType(property.PropertyType))
+                {
+                    modelArray.AddRange(CreateResourceModel(property.PropertyType));
+                }
+            }
+            modelArray.Add(model);
+            return modelArray;
+        }
+        private static bool IsSimpleType(Type type)
+        {
+            if (type.IsPrimitive || type.Assembly.FullName.Contains("mscorlib"))
+                return true;
+            return false;
         }
 
         /// <summary>
@@ -111,6 +157,31 @@ namespace Swagger.Net
 
             return parameter;
         }
+
+        /// <summary>
+        /// Gets the type as string.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        public static string GetTypeAsString(Type type)
+        {
+            if (type.IsGenericType)
+            {
+                StringBuilder sb = new StringBuilder(type.Name);
+                sb.Append("&lt;");
+                Type[] types = type.GetGenericArguments();
+                for (int i = 0; i < types.Length; i++)
+                {
+                    sb.Append(GetTypeAsString(types[i]));
+                    if (i != (types.Length - 1)) sb.Append(", ");
+                }
+                sb.Append("&gt;");
+                return sb.Replace("`1", "").ToString();
+            }
+            else
+                return type.Name;
+        }
+        
     }
 
     public class ResourceListing
@@ -120,6 +191,7 @@ namespace Swagger.Net
         public string basePath { get; set; }
         public string resourcePath { get; set; }
         public List<ResourceApi> apis { get; set; }
+        public Dictionary<string,ResourceModel> models { get; set; }
     }
 
     public class ResourceApi
@@ -155,5 +227,21 @@ namespace Swagger.Net
         public int max { get; set; }
         public int min { get; set; }
         public string valueType { get; set; }
+    }
+
+    public class ResourceModel
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+
+        public Dictionary<string,ResourceModelProperty> properties { get; set; }
+
+
+    }
+
+    public class ResourceModelProperty
+    {
+        public string type { get; set; }
+        public bool required { get; set; }
     }
 }
