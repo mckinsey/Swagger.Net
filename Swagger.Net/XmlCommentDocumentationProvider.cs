@@ -16,8 +16,10 @@ namespace Swagger.Net
     public class XmlCommentDocumentationProvider : IDocumentationProvider
     {
         XPathNavigator _documentNavigator;
+        XPathNavigator _dataTypeMapNavigator;
         private const string _methodExpression = "/doc/members/member[@name='M:{0}']";
         private const string _returnsExpression = "/doc/members/member[@name='M:{0}']/returns";
+        private const string _dataTypeExpression = "/DataTypes/DataType[@Id='{0}']";
         private static Regex nullableTypeNameRegex = new Regex(@"(.*\.Nullable)" + Regex.Escape("`1[[") + "([^,]*),.*");
 
         public XmlCommentDocumentationProvider(string documentPath)
@@ -196,9 +198,31 @@ namespace Swagger.Net
             {
                 var genericParameterType = parameterType.GetGenericArguments().FirstOrDefault();
                 if (genericParameterType != null)
-                    return genericParameterType.Name;
+                    return GetMappedParamName(genericParameterType.Name);
             }
-            return parameterType.Name;
+            return GetMappedParamName(parameterType.Name);
+        }
+
+        private string GetMappedParamName(string parameterTypeName)
+        {
+            string selectExpression = string.Format(_dataTypeExpression, parameterTypeName);
+            XPathNavigator node = _dataTypeMapNavigator.SelectSingleNode(selectExpression);
+            if (node != null)
+            {
+                var type = node.GetAttribute("JSValue", string.Empty);
+                if (!string.IsNullOrEmpty(type))
+                    return type;
+            }
+            return parameterTypeName;
+        }
+
+        public string DataTypeMapFilePath
+        {
+            set
+            {
+                XPathDocument xpath = new XPathDocument(value);
+                _dataTypeMapNavigator = xpath.CreateNavigator();
+            }
         }
     }
 }

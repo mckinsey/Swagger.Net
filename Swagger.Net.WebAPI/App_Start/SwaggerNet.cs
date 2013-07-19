@@ -30,8 +30,9 @@ namespace Swagger.Net.WebApi.App_Start
 
             try
             {
-                config.Services.Replace(typeof(IDocumentationProvider),
-                    new XmlCommentDocumentationProvider(HttpContext.Current.Server.MapPath("~/bin/Swagger.Net.WebApi.XML")));
+                var xmlCommentDocumentationProvider = new XmlCommentDocumentationProvider(HttpContext.Current.Server.MapPath("~/bin/Swagger.Net.WebApi.XML"));
+                xmlCommentDocumentationProvider.DataTypeMapFilePath = HttpContext.Current.Server.MapPath("~/bin/Config/DataTypeMap.xml");
+                config.Services.Replace(typeof(IDocumentationProvider), xmlCommentDocumentationProvider);
             }
             catch (FileNotFoundException)
             {
