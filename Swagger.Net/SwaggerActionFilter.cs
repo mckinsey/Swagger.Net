@@ -54,7 +54,7 @@ namespace Swagger.Net
                 if (!apiControllerName.Equals(actionContext.ControllerContext.ControllerDescriptor.ControllerName))
                     continue;
 
-                ResourceApi rApi = SwaggerGen.CreateResourceApi(api);
+                ResourceApi rApi = SwaggerGen.CreateResourceApi(api,false);
                 r.apis.Add(rApi);
 
                 List<ResourceModel> rModels = SwaggerGen.CreateResourceModel(api.ActionDescriptor.ReturnType);

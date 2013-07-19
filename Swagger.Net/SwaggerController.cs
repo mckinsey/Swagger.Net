@@ -30,7 +30,7 @@ namespace Swagger.Net
 
                 uniqueControllers.Add(controllerName);
 
-                ResourceApi rApi = SwaggerGen.CreateResourceApi(api);
+                ResourceApi rApi = SwaggerGen.CreateResourceApi(api,true);
                 r.apis.Add(rApi);
             }
 

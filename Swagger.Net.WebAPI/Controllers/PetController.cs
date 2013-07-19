@@ -55,7 +55,7 @@ namespace Swagger_Test
 
         // PUT api/<controller>/5
         [HttpPut]
-        [ActionName("PutExport")]
+        [ActionName("PutUser")]
         public HttpResponseMessage Put(int id, int? userId = null)
         {
             return Request.CreateResponse(HttpStatusCode.NoContent);

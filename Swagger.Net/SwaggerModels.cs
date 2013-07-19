@@ -55,17 +55,23 @@ namespace Swagger.Net
         }
 
         /// <summary>
-        /// Create an api element 
+        /// Create an api element. swagger root defines if request is to load all apis with in a controller or request an api
         /// </summary>
         /// <param name="api">Description of the api via the ApiExplorer</param>
-        /// <returns>A resource api</returns>
-        public static ResourceApi CreateResourceApi(ApiDescription api)
+        /// <param name="swaggerRoot">if set to <c>true</c> [swagger root].</param>
+        /// <returns>
+        /// A resource api
+        /// </returns>
+        public static ResourceApi CreateResourceApi(ApiDescription api,bool swaggerRoot)
         {
             var apiRelPath = api.RelativePath;
-            int queryIndex= apiRelPath.IndexOf('?');
-            if (queryIndex > 0)
+            if (swaggerRoot)
             {
-                apiRelPath = apiRelPath.Substring(0, queryIndex);
+                int queryIndex = apiRelPath.IndexOf('?');
+                if (queryIndex > 0)
+                {
+                    apiRelPath = apiRelPath.Substring(0, queryIndex);
+                }
             }
             ResourceApi rApi = new ResourceApi()
             {
