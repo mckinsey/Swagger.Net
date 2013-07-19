@@ -161,5 +161,17 @@ namespace Swagger.Net
             }
             return typeName;
         }
+
+        internal string GetParamName(Type parameterType)
+        {
+            var result = nullableTypeNameRegex.Match(parameterType.FullName);
+            if (result.Success)
+            {
+                var genericParameterType = parameterType.GetGenericArguments().FirstOrDefault();
+                if (genericParameterType != null)
+                    return genericParameterType.Name;
+            }
+            return parameterType.Name;
+        }
     }
 }
