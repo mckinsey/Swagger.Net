@@ -29,6 +29,6 @@ namespace Swagger.Net.WebApi.Models
         /// <value>
         /// The colors.
         /// </value>
-        public Color Color { get; set; }
+        public IEnumerable<Color> Colors { get; set; }
     }
 }
