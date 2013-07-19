@@ -17,6 +17,7 @@ namespace Swagger.Net
     {
         XPathNavigator _documentNavigator;
         private const string _methodExpression = "/doc/members/member[@name='M:{0}']";
+        private const string _returnsExpression = "/doc/members/member[@name='M:{0}']/returns";
         private static Regex nullableTypeNameRegex = new Regex(@"(.*\.Nullable)" + Regex.Escape("`1[[") + "([^,]*),.*");
 
         public XmlCommentDocumentationProvider(string documentPath)
@@ -93,19 +94,30 @@ namespace Swagger.Net
             {
                 if (reflectedActionDescriptor.MethodInfo.ReturnType.IsGenericType)
                 {
-                    StringBuilder sb = new StringBuilder(reflectedActionDescriptor.MethodInfo.ReturnParameter.ParameterType.Name);
+                    StringBuilder sb =
+                        new StringBuilder(reflectedActionDescriptor.MethodInfo.ReturnParameter.ParameterType.Name);
                     sb.Append("<");
-                    Type[] types = reflectedActionDescriptor.MethodInfo.ReturnParameter.ParameterType.GetGenericArguments();
-                    for(int i = 0; i < types.Length; i++)
+                    Type[] types =
+                        reflectedActionDescriptor.MethodInfo.ReturnParameter.ParameterType.GetGenericArguments();
+                    for (int i = 0; i < types.Length; i++)
                     {
                         sb.Append(types[i].Name);
-                        if(i != (types.Length - 1)) sb.Append(", ");
+                        if (i != (types.Length - 1)) sb.Append(", ");
                     }
                     sb.Append(">");
-                    return sb.Replace("`1","").ToString();
+                    return sb.Replace("`1", "").ToString();
                 }
                 else
+                {
+                    var node = GetMemberReturnsNode(reflectedActionDescriptor);
+                    if (node != null)
+                    {
+                        var type = node.GetAttribute("type", string.Empty);
+                        if (!string.IsNullOrEmpty(type))
+                            return type;
+                    }
                     return reflectedActionDescriptor.MethodInfo.ReturnType.Name;
+                }
             }
 
             return "void";
@@ -135,6 +147,21 @@ namespace Swagger.Net
                 }
             }
 
+            return null;
+        }
+
+        private XPathNavigator GetMemberReturnsNode(HttpActionDescriptor actionDescriptor)
+        {
+            ReflectedHttpActionDescriptor reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
+            if (reflectedActionDescriptor != null)
+            {
+                string selectExpression = string.Format(_returnsExpression, GetMemberName(reflectedActionDescriptor.MethodInfo));
+                XPathNavigator node = _documentNavigator.SelectSingleNode(selectExpression);
+                if (node != null)
+                {
+                    return node;
+                }
+            }
             return null;
         }
 
