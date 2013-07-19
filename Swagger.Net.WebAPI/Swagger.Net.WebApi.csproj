@@ -16,6 +16,10 @@
     <UseIISExpress>false</UseIISExpress>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -136,7 +140,6 @@
     <Content Include="docs\images\pet_store_api.png" />
     <Content Include="docs\images\throbber.gif" />
     <Content Include="docs\images\wordnik_api.png" />
-    <Content Include="docs\index - Copy.html" />
     <Content Include="docs\index.html" />
     <Content Include="docs\lib\backbone-min.js" />
     <Content Include="docs\lib\handlebars-1.0.rc.1.js" />

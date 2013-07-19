@@ -61,9 +61,15 @@ namespace Swagger.Net
         /// <returns>A resource api</returns>
         public static ResourceApi CreateResourceApi(ApiDescription api)
         {
+            var apiRelPath = api.RelativePath;
+            int queryIndex= apiRelPath.IndexOf('?');
+            if (queryIndex > 0)
+            {
+                apiRelPath = apiRelPath.Substring(0, queryIndex);
+            }
             ResourceApi rApi = new ResourceApi()
             {
-                path = "/" + api.RelativePath,
+                path = "/" + apiRelPath,
                 description = api.Documentation,
                 operations = new List<ResourceApiOperation>()
             };
@@ -83,7 +89,7 @@ namespace Swagger.Net
                 return null;
             if (returnType.IsGenericType)
                 returnType = returnType.GetGenericArguments()[0];
-            if (IsSimpleType(returnType)) return null;
+            if (IsSystemType(returnType)) return null;
 
             List<ResourceModel> modelArray = new List<ResourceModel>();
             ResourceModel model = new ResourceModel();
@@ -100,17 +106,31 @@ namespace Swagger.Net
 
                 model.properties.Add(property.Name, prop);
 
-                if (!IsSimpleType(property.PropertyType))
+                if (!IsSystemType(property.PropertyType))
                 {
-                    modelArray.AddRange(CreateResourceModel(property.PropertyType));
+                    var innerModel = CreateResourceModel(property.PropertyType);
+                    if (innerModel != null)
+                    {
+                        modelArray.AddRange(innerModel);
+                    }
                 }
             }
             modelArray.Add(model);
             return modelArray;
         }
-        private static bool IsSimpleType(Type type)
+
+        /// <summary>
+        /// Determines whether [is system type] [the specified type].
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>
+        ///   <c>true</c> if [is system type] [the specified type]; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool IsSystemType(Type type)
         {
-            if (type.IsPrimitive || type.Assembly.FullName.Contains("mscorlib"))
+            if (type.IsPrimitive || type.Namespace.StartsWith("System")||
+                type.Module.ScopeName.Equals("CommonLanguageRuntimeLibrary")
+                )
                 return true;
             return false;
         }
