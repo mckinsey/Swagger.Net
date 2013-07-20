@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataTypes>
+  <DataType Id="Int32" JSValue="int"/>
+  <DataType Id="Int64" JSValue="int"/>
+  <DataType Id="Int" JSValue="int"/>
+  <DataType Id="UInt" JSValue="int"/>
+  <DataType Id="Boolean" JSValue="boolean"/>
+  <DataType Id="String" JSValue="string"/>
+  <DataType Id="Char" JSValue="char"/>
+  <DataType Id="Double" JSValue="double"/>
+  <DataType Id="Decimal" JSValue="float"/>
+</DataTypes>

@@ -105,7 +105,7 @@ namespace Swagger.Net
                 paramType = (paramType == "query" && api.RelativePath.IndexOf("{" + param.Name + "}") > -1) ? PATH : paramType,
                 name = param.Name,
                 description = param.Documentation,
-                dataType = param.ParameterDescriptor.ParameterType.Name,
+                dataType = docProvider.GetParamName(param.ParameterDescriptor.ParameterType),
                 required = docProvider.GetRequired(param.ParameterDescriptor)
             };
 
