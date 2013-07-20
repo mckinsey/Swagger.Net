@@ -19,13 +19,27 @@ namespace Swagger_Test
         ///     Retuns a paged list of pet names
         ///     GET api/Pet
         /// </summary>
+        /// <remarks>
+        ///     Remarks for Get(int page = 1, int? size=10)
+        /// </remarks>
         /// <returns cref="Pet" type="Pet[]"></returns>
+        /// <response code="400">Bad request; parameters {page} and/or {size} were invalid</response>
+        /// <response code="401">Authentication credentials required for this API</response>
+        /// <response code="403">Account not authorized to access this entity</response>
         public HttpResponseMessage Get(int page = 1, int? size=10)
         {
             return  Request.CreateResponse(HttpStatusCode.OK,  new Pet[] { new Pet() { Id=1, Name="Pet #1"} , new Pet() { Id = 2, Name = "Pet #2" } });
         }
 
-        // GET api/Pet/5
+        /// <summary>
+        ///     Retuns a Pet
+        ///     GET api/Pet/{id}
+        /// </summary>
+        /// <returns cref="Pet" type="Pet"></returns>
+        /// <response code="400">Bad request; parameter {id} was invalid</response>
+        /// <response code="401">Authentication credentials required for this API</response>
+        /// <response code="403">Account not authorized to access this entity</response>
+        /// <response code="404">The Pet entity was not found</response>
         public HttpResponseMessage Get(int id)
         {
             return Request.CreateResponse(HttpStatusCode.OK, String.Concat("The value of id is ", id));
