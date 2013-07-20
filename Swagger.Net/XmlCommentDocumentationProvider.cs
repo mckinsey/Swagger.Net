@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -19,8 +21,10 @@ namespace Swagger.Net
         XPathNavigator _dataTypeMapNavigator;
         private const string _methodExpression = "/doc/members/member[@name='M:{0}']";
         private const string _returnsExpression = "/doc/members/member[@name='M:{0}']/returns";
+        private const string _responseCodeExpression = "/doc/members/member[@name='M:{0}']/response";
         private const string _dataTypeExpression = "/DataTypes/DataType[@Id='{0}']";
         private static Regex nullableTypeNameRegex = new Regex(@"(.*\.Nullable)" + Regex.Escape("`1[[") + "([^,]*),.*");
+        private const string _newLine = "<br/>";
 
         public XmlCommentDocumentationProvider(string documentPath)
         {
@@ -76,17 +80,19 @@ namespace Swagger.Net
 
         public virtual string GetNotes(HttpActionDescriptor actionDescriptor)
         {
+            var responseCodesSummary = GetMemberResponseCodeSummary(actionDescriptor);
+            var summary = string.Empty;
             XPathNavigator memberNode = GetMemberNode(actionDescriptor);
             if (memberNode != null)
             {
                 XPathNavigator summaryNode = memberNode.SelectSingleNode("remarks");
                 if (summaryNode != null)
                 {
-                    return summaryNode.Value.Trim();
+                    summary = string.Format("{0}{1}", summaryNode.Value.Trim(), _newLine);
                 }
             }
-
-            return "No Documentation Found.";
+            summary = string.Format("{0}{1}", summary, responseCodesSummary);
+            return string.IsNullOrEmpty(summary) ? "No Documentation Found." : summary;
         }
 
         public virtual string GetResponseClass(HttpActionDescriptor actionDescriptor)
@@ -165,6 +171,33 @@ namespace Swagger.Net
                 }
             }
             return null;
+        }
+
+        private object GetMemberResponseCodeSummary(HttpActionDescriptor actionDescriptor)
+        {
+            var summary = string.Empty;
+            foreach (var node in GetMemberResponseCodeNodes(actionDescriptor))
+            {
+                summary += string.Format("Code: {0}, Reason: {1}{2}"
+                    , node.GetAttribute("code", string.Empty)
+                    , node.ToString()
+                    , _newLine);
+            }
+            return string.IsNullOrEmpty(summary) ? summary : string.Format("Response codes:{0}{1}", _newLine, summary);
+        }
+
+        private IEnumerable<XPathNavigator> GetMemberResponseCodeNodes(HttpActionDescriptor actionDescriptor)
+        {
+            ReflectedHttpActionDescriptor reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
+            if (reflectedActionDescriptor != null)
+            {
+                string selectExpression = string.Format(_responseCodeExpression, GetMemberName(reflectedActionDescriptor.MethodInfo));
+                var nodes = _documentNavigator.Select(selectExpression);
+                while (nodes.MoveNext())
+                {
+                    yield return nodes.Current;
+                }
+            }
         }
 
         private static string GetMemberName(MethodInfo method)
