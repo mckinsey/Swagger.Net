@@ -162,6 +162,7 @@
     <Content Include="docs\lib\underscore-min.js" />
     <Content Include="docs\swagger-ui.js" />
     <Content Include="docs\swagger-ui.min.js" />
+    <Content Include="docs\**\*" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
