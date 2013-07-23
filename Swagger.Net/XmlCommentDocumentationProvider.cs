@@ -91,21 +91,13 @@ namespace Swagger.Net
             ReflectedHttpActionDescriptor reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
             if (reflectedActionDescriptor != null)
             {
-                if (reflectedActionDescriptor.MethodInfo.ReturnType.IsGenericType)
+                string responseClassName = string.Empty;
+                if (!SwaggerGen.TryGetReturnModelFromApiAware(reflectedActionDescriptor, ref responseClassName))
                 {
-                    StringBuilder sb = new StringBuilder(reflectedActionDescriptor.MethodInfo.ReturnParameter.ParameterType.Name);
-                    sb.Append("<");
-                    Type[] types = reflectedActionDescriptor.MethodInfo.ReturnParameter.ParameterType.GetGenericArguments();
-                    for(int i = 0; i < types.Length; i++)
-                    {
-                        sb.Append(types[i].Name);
-                        if(i != (types.Length - 1)) sb.Append(", ");
-                    }
-                    sb.Append(">");
-                    return sb.Replace("`1","").ToString();
+                    responseClassName = SwaggerGen.GetTypeAsString(reflectedActionDescriptor.MethodInfo.ReturnType);
                 }
-                else
-                    return reflectedActionDescriptor.MethodInfo.ReturnType.Name;
+
+                return responseClassName;
             }
 
             return "void";
@@ -116,7 +108,12 @@ namespace Swagger.Net
             ReflectedHttpActionDescriptor reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
             if (reflectedActionDescriptor != null)
             {
-                return reflectedActionDescriptor.MethodInfo.Name;
+                // Add param names to nick name to distinguish two different request of same type (in ui collapsible blocks)
+                // GET Blogs/
+                // GET Blogs/{id}
+                var parameters = reflectedActionDescriptor.MethodInfo.GetParameters();
+                var paramString = parameters != null && parameters.Any() ? parameters.Select(p => p.Name).Aggregate((f, s) => f + "_" + s) : string.Empty;
+                return reflectedActionDescriptor.MethodInfo.Name + "_" + paramString;
             }
 
             return "NicknameNotFound";

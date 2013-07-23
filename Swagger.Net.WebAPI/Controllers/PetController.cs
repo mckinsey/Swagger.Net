@@ -2,6 +2,8 @@
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Swagger.Net;
+using Swagger.Net.WebApi.Models;
 
 namespace Swagger_Test
 {
@@ -13,6 +15,7 @@ namespace Swagger_Test
     ///   See http://stackoverflow.com/questions/10660721/what-is-the-difference-between-httpresponsemessage-and-httpresponseexception
     ///   for a discussion on the merits of using HttpResponseMessage over other return types.
     /// </remarks>
+    [ApiAware(ExceptionTypes=new Type[]{typeof(Exception)})]
     public class PetController : ApiController
     {
         /// <summary>
@@ -20,6 +23,7 @@ namespace Swagger_Test
         ///     GET api/Pet
         /// </summary>
         /// <returns cref="Pet" type="Pet[]"></returns>
+        [ApiAware(typeof(Pet[]))]
         public HttpResponseMessage Get(int page = 1, int? size=10)
         {
             return  Request.CreateResponse(HttpStatusCode.OK,  new Pet[] { new Pet() { Id=1, Name="Pet #1"} , new Pet() { Id = 2, Name = "Pet #2" } });
@@ -55,7 +59,7 @@ namespace Swagger_Test
 
         // PUT api/<controller>/5
         [HttpPut]
-        [ActionName("PutExport")]
+        [ActionName("PutUser")]
         public HttpResponseMessage Put(int id, int? userId = null)
         {
             return Request.CreateResponse(HttpStatusCode.NoContent);
@@ -68,9 +72,9 @@ namespace Swagger_Test
         }
     }
 
-    public class Pet
-    {
-        public int Id;
-        public string Name;
-    }
+    //public class Pet
+    //{
+    //    public int Id;
+    //    public string Name;
+    //}
 }
