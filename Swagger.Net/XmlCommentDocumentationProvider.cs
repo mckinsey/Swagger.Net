@@ -91,7 +91,13 @@ namespace Swagger.Net
             ReflectedHttpActionDescriptor reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
             if (reflectedActionDescriptor != null)
             {
-                return SwaggerGen.GetTypeAsString(reflectedActionDescriptor.MethodInfo.ReturnType);
+                string responseClassName = string.Empty;
+                if (!SwaggerGen.TryGetReturnModelFromApiAware(reflectedActionDescriptor, ref responseClassName))
+                {
+                    responseClassName = SwaggerGen.GetTypeAsString(reflectedActionDescriptor.MethodInfo.ReturnType);
+                }
+
+                return responseClassName;
             }
 
             return "void";
@@ -105,9 +111,9 @@ namespace Swagger.Net
                 // Add param names to nick name to distinguish two different request of same type (in ui collapsible blocks)
                 // GET Blogs/
                 // GET Blogs/{id}
-                var parameters=reflectedActionDescriptor.MethodInfo.GetParameters();
+                var parameters = reflectedActionDescriptor.MethodInfo.GetParameters();
                 var paramString = parameters != null && parameters.Any() ? parameters.Select(p => p.Name).Aggregate((f, s) => f + "_" + s) : string.Empty;
-                return reflectedActionDescriptor.MethodInfo.Name+"_"+paramString;
+                return reflectedActionDescriptor.MethodInfo.Name + "_" + paramString;
             }
 
             return "NicknameNotFound";
