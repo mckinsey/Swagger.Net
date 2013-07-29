@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Swagger.Net.WebAPI.Models;
 
 namespace Swagger_Test
 {
@@ -68,9 +69,4 @@ namespace Swagger_Test
         }
     }
 
-    public class Pet
-    {
-        public int Id;
-        public string Name;
-    }
 }
