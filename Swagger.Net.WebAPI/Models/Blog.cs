@@ -41,5 +41,36 @@ namespace Swagger.Net.WebAPI.Models
         /// The content.
         /// </value>
         public string Content { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type.
+        /// </summary>
+        /// <value>
+        /// The type.
+        /// </value>
+        public Blogtype Type { get; set; }
+    }
+
+    /// <summary>
+    /// Blog Type Enum
+    /// </summary>
+    public enum Blogtype
+    {
+        /// <summary>
+        /// The social
+        /// </summary>
+        Social,
+        /// <summary>
+        /// The technical
+        /// </summary>
+        Technical,
+        /// <summary>
+        /// The health
+        /// </summary>
+        Health,
+        /// <summary>
+        /// The others
+        /// </summary>
+        Others
     }
 }

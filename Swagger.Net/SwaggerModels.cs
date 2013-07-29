@@ -170,7 +170,10 @@ namespace Swagger.Net
                 }
                 else if (property.PropertyType.IsEnum)
                 {
-                    //prop.va
+                    prop.type = "string";
+                    prop.allowableValues = new AllowableValues();
+                    prop.allowableValues.valueType = "LIST";
+                    prop.allowableValues.values= Enum.GetNames(property.PropertyType);
                 }
                 else
                 {
@@ -378,7 +381,7 @@ namespace Swagger.Net
         /// <value>
         /// The values.
         /// </value>
-        public List<string> values { get; set; }
+        public string[] values { get; set; }
     }
 
     /// <summary>
