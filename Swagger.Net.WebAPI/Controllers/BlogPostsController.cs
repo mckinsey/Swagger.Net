@@ -34,6 +34,16 @@ namespace Swagger.Net.WebApi.Controllers
             return LoadBlogs().FirstOrDefault(b => b.Id == id); ;
         }
 
+        /// <summary>
+        /// Gets the specified type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        public IEnumerable<Blog> GetBlogsByType(Blogtype type)
+        {
+            return LoadBlogs().Where(b => b.Type == type);
+        }
+
         // POST api/blogposts
         public void Post([FromBody]string value)
         {
@@ -57,8 +67,12 @@ namespace Swagger.Net.WebApi.Controllers
         List<Blog> LoadBlogs()
         {
             return new List<Blog> {
-                new Blog{Auther="swagger",Content="content 1",Id=1,Title="test"},
-                new Blog{Auther="swagger",Content="content 2",Id=2,Title="test"}
+                new Blog{Auther="swagger",Content="content 1",Id=1,Title="testSocial",Type=Blogtype.Social},
+                new Blog{Auther="swagger",Content="content 2",Id=2,Title="testHealth",Type=Blogtype.Health},
+                new Blog{Auther="swagger",Content="content 3",Id=2,Title="testTechnical",Type=Blogtype.Technical},
+                new Blog{Auther="swagger",Content="content 4",Id=2,Title="testSocial",Type=Blogtype.Social},
+                new Blog{Auther="swagger",Content="content 5",Id=2,Title="testHealth",Type=Blogtype.Health},
+                new Blog{Auther="swagger",Content="content 6",Id=2,Title="testTechnical",Type=Blogtype.Technical},
             };
         }
     }

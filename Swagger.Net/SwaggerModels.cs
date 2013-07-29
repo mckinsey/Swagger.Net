@@ -114,6 +114,14 @@ namespace Swagger.Net
                 required = docProvider.GetRequired(param.ParameterDescriptor)
             };
 
+            if (param.ParameterDescriptor.ParameterType.IsEnum)
+            {
+                parameter.dataType = "string";
+                parameter.allowableValues = new AllowableValues();
+                parameter.allowableValues.valueType = "LIST";
+                parameter.allowableValues.values = Enum.GetNames(param.ParameterDescriptor.ParameterType);
+            }
+
             return parameter;
         }
 
@@ -292,6 +300,7 @@ namespace Swagger.Net
         public string summary { get; set; }
         public string notes { get; set; }
         public List<ResourceApiOperationParameter> parameters { get; set; }
+        public AllowableValues allowableValues { get; set; }
     }
 
     public class ResourceApiOperationParameter
@@ -302,7 +311,7 @@ namespace Swagger.Net
         public string dataType { get; set; }
         public bool required { get; set; }
         public bool allowMultiple { get; set; }
-        public OperationParameterAllowableValues allowableValues { get; set; }
+        public AllowableValues allowableValues { get; set; }
     }
 
     public class OperationParameterAllowableValues
