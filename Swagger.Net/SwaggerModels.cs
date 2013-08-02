@@ -105,11 +105,18 @@ namespace Swagger.Net
                 paramType = (paramType == "query" && api.RelativePath.IndexOf("{" + param.Name + "}") > -1) ? PATH : paramType,
                 name = param.Name,
                 description = param.Documentation,
-                dataType = param.ParameterDescriptor.ParameterType.Name,
+                dataType = GetSimpleDataTypeName(param.ParameterDescriptor.ParameterType),
                 required = docProvider.GetRequired(param.ParameterDescriptor)
             };
 
             return parameter;
+        }
+
+        private static string GetSimpleDataTypeName(Type type)
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                return string.Format("{0}?", type.GetGenericArguments().First().Name);
+            return type.Name;
         }
     }
 
