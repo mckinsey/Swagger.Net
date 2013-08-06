@@ -44,36 +44,34 @@ namespace Swagger.Net
 
             ResourceListing r = SwaggerGen.CreateResourceListing(actionContext);
 
-            var existing = new Dictionary<HttpMethod, List<ResourceApi>>();
-
-            foreach (var api in GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions
-                .OrderBy(api => api.HttpMethod.Method).ThenBy(api => api.RelativePath.Length))
+            foreach (var grp in GlobalConfiguration.Configuration.Services.GetApiExplorer().ApiDescriptions.GroupBy(api => api.HttpMethod))
             {
-                string apiControllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
-                if (api.Route.Defaults.ContainsKey(SwaggerGen.SWAGGER) ||
-                    apiControllerName.ToUpper().Equals(SwaggerGen.SWAGGER.ToUpper()))
-                    continue;
-
-                // Make sure we only report the current controller docs
-                if (!apiControllerName.Equals(actionContext.ControllerContext.ControllerDescriptor.ControllerName))
-                    continue;
-
-                if (!existing.ContainsKey(api.HttpMethod))
-                    existing[api.HttpMethod] = new List<ResourceApi>();
-
-                ResourceApi rApi = SwaggerGen.CreateResourceApi(api);
-                if (IsDuplicate(api, rApi, existing[api.HttpMethod]))
-                    continue;
-                existing[api.HttpMethod].Add(rApi);
-                r.apis.Add(rApi);
-
-                ResourceApiOperation rApiOperation = SwaggerGen.CreateResourceApiOperation(api, docProvider);
-                rApi.operations.Add(rApiOperation);
-
-                foreach (var param in api.ParameterDescriptions)
+                var existing = new List<ResourceApi>();
+                foreach (var api in grp.OrderBy(api => api.RelativePath.Length))
                 {
-                    ResourceApiOperationParameter parameter = SwaggerGen.CreateResourceApiOperationParameter(api, param, docProvider);
-                    rApiOperation.parameters.Add(parameter);
+                    string apiControllerName = api.ActionDescriptor.ControllerDescriptor.ControllerName;
+                    if (api.Route.Defaults.ContainsKey(SwaggerGen.SWAGGER) ||
+                        apiControllerName.ToUpper().Equals(SwaggerGen.SWAGGER.ToUpper()))
+                        continue;
+
+                    // Make sure we only report the current controller docs
+                    if (!apiControllerName.Equals(actionContext.ControllerContext.ControllerDescriptor.ControllerName))
+                        continue;
+
+                    ResourceApi rApi = SwaggerGen.CreateResourceApi(api);
+                    if (IsDuplicate(api, rApi, existing))
+                        continue;
+                    existing.Add(rApi);
+                    r.apis.Add(rApi);
+
+                    ResourceApiOperation rApiOperation = SwaggerGen.CreateResourceApiOperation(api, docProvider);
+                    rApi.operations.Add(rApiOperation);
+
+                    foreach (var param in api.ParameterDescriptions)
+                    {
+                        ResourceApiOperationParameter parameter = SwaggerGen.CreateResourceApiOperationParameter(api, param, docProvider);
+                        rApiOperation.parameters.Add(parameter);
+                    }
                 }
             }
 
