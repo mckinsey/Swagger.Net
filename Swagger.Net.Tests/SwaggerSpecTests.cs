@@ -28,6 +28,14 @@ namespace Swagger.Net.Tests
         }
 
         [TestMethod]
+        public void TestGenericTypes()
+        {
+            Assert.AreEqual("MockClass2[MockClass1]", SwaggerSpec.GetDataTypeName(typeof(MockClass2<MockClass1>)));
+            Assert.AreEqual("MockClass2[MockStruct1, MockClass1]", SwaggerSpec.GetDataTypeName(typeof(MockClass2<MockStruct1, MockClass1>)));
+            Assert.AreEqual("MockClass2[MockClass2[MockStruct1], MockClass1]", SwaggerSpec.GetDataTypeName(typeof(MockClass2<MockClass2<MockStruct1>, MockClass1>)));
+        }
+
+        [TestMethod]
         public void TestNullable()
         {
             Assert.AreEqual("int?", SwaggerSpec.GetDataTypeName(typeof(int?)));
@@ -62,5 +70,16 @@ namespace Swagger.Net.Tests
 
     public class MockClass1
     {
+    }
+
+    public class MockClass2<T>
+    {
+        T Something;
+    }
+
+    public class MockClass2<S, T>
+    {
+        S Something1;
+        T Something2;
     }
 }

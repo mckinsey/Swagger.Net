@@ -44,7 +44,8 @@ namespace Swagger.Net
                 var genericType = type.GetGenericTypeDefinition();
                 if (genericType == typeof(Nullable<>))
                     return string.Format("{0}?", GetDataTypeName(type.GetGenericArguments().First()));
-
+                var genericlessName = type.Name.Remove(type.Name.IndexOf("`"));
+                return string.Format("{0}[{1}]", genericlessName, string.Join(", ", type.GetGenericArguments().Select(GetDataTypeName)));
             }
             return GetNameFromSimpleType(type);
         }
