@@ -36,7 +36,7 @@ namespace Swagger.Net
             if (type == typeof(IEnumerable) || type.GetInterfaces().Any(t => t == typeof(IEnumerable)))
             {
                 var typeArg = type.IsGenericType ? type.GetGenericArguments().First() : typeof(object);
-                return string.Format("Array<{0}>", GetDataTypeName(typeArg));
+                return string.Format("Array[{0}]", GetDataTypeName(typeArg));
             }
 
             if (type.IsGenericType)

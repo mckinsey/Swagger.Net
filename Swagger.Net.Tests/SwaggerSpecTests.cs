@@ -39,12 +39,12 @@ namespace Swagger.Net.Tests
         [TestMethod]
         public void TestContainers()
         {
-            Assert.AreEqual("Array<object>", SwaggerSpec.GetDataTypeName(typeof(List<object>)));
-            Assert.AreEqual("Array<MockClass1>", SwaggerSpec.GetDataTypeName(typeof(List<MockClass1>)));
-            Assert.AreEqual("Array<object>", SwaggerSpec.GetDataTypeName(typeof(IEnumerable)));
-            Assert.AreEqual("Array<MockClass1>", SwaggerSpec.GetDataTypeName(typeof(IEnumerable<MockClass1>)));
-            Assert.AreEqual("Array<object>", SwaggerSpec.GetDataTypeName(typeof(Collection<object>)));
-            Assert.AreEqual("Array<MockClass1>", SwaggerSpec.GetDataTypeName(typeof(Collection<MockClass1>)));
+            Assert.AreEqual("Array[object]", SwaggerSpec.GetDataTypeName(typeof(List<object>)));
+            Assert.AreEqual("Array[MockClass1]", SwaggerSpec.GetDataTypeName(typeof(List<MockClass1>)));
+            Assert.AreEqual("Array[object]", SwaggerSpec.GetDataTypeName(typeof(IEnumerable)));
+            Assert.AreEqual("Array[MockClass1]", SwaggerSpec.GetDataTypeName(typeof(IEnumerable<MockClass1>)));
+            Assert.AreEqual("Array[object]", SwaggerSpec.GetDataTypeName(typeof(Collection<object>)));
+            Assert.AreEqual("Array[MockClass1]", SwaggerSpec.GetDataTypeName(typeof(Collection<MockClass1>)));
         }
     }
 
